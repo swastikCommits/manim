@@ -2,7 +2,7 @@ import "@repo/ui/styles.css";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
-import { SessionProvider } from "next-auth/react";
+import { Providers } from "../providers";
 
 const geist = Geist({ subsets: ["latin"] });
 
@@ -18,9 +18,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <Providers>
       <body className={geist.className}>
-        <SessionProvider>{children}</SessionProvider>
+        {children}
       </body>
+      </Providers>
     </html>
   );
 }
