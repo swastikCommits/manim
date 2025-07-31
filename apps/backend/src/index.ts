@@ -9,7 +9,7 @@ import { setupSocket } from "./ws/SocketHandler";
 
 import { setupBullQueue } from "./queue/producer";
 import { setupWorker } from "./worker/worker";
-import jobRoutes from "./api/job";   // routes for enqueueing jobs
+import jobRoutes from "./job/jobRoutes";   // routes for enqueueing jobs
 
 dotenv.config();
 
