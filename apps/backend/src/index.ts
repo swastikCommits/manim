@@ -8,7 +8,7 @@ import db from "@repo/db/client"
 import { setupSocket } from "./ws/SocketHandler";
 
 import { setupBullQueue } from "./queue/producer";
-import { setupWorker } from "./worker/worker";
+import { setupWorker } from "./workers/worker";
 import jobRoutes from "./job/jobRoutes";   // routes for enqueueing jobs
 
 dotenv.config();

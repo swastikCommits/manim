@@ -12,10 +12,14 @@
   "dependencies": {
     "@repo/db": "*",
     "@types/express": "^5.0.3",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^24.1.0",
     "@types/ws": "^8.18.1",
+    "axios": "^1.11.0",
     "bullmq": "^5.56.9",
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "fs-extra": "^11.3.0",
     "ioredis": "^5.7.0",
     "ws": "^8.18.3"
   },

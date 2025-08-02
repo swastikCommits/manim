@@ -5,13 +5,11 @@ import { JobStatus } from "@prisma/client"
 // Store connected clients with their IDs
 const clients = new Map<string, WebSocket>();
 
-// Message types for type safety
 type WebSocketMessage = {
   type: string;
   data: any;
 };
 
-// Job update message type
 type JobUpdateMessage = {
   type: "job_update";
   data: {
@@ -27,8 +25,7 @@ export function setupSocket(wss: WebSocketServer) {
   wss.on("connection", (ws: WebSocket) => {
     const socketId = generateId();
     clients.set(socketId, ws);
-    console.log(`WebSocket client connected: ${socketId}`);
-
+    // console.log(`WebSocket client connected: ${socketId}`);
     ws.send(JSON.stringify({ 
       type: "connection_established", 
       data: { 
@@ -40,7 +37,7 @@ export function setupSocket(wss: WebSocketServer) {
     ws.on("message", (data) => {
       try {
         const message = JSON.parse(data.toString()) as WebSocketMessage;
-        console.log(`Received message from ${socketId}:`, message.type);
+        // console.log(`Received message from ${socketId}:`, message.type);
         
         switch (message.type) {
           case "ping":
@@ -60,11 +57,11 @@ export function setupSocket(wss: WebSocketServer) {
 
     ws.on("close", () => {
       clients.delete(socketId);
-      console.log(`WebSocket client disconnected: ${socketId}`);
+      // console.log(`WebSocket client disconnected: ${socketId}`);
     });
     
     ws.on("error", (error) => {
-      console.error(`WebSocket error for client ${socketId}:`, error);
+      // console.error(`WebSocket error for client ${socketId}:`, error);
       clients.delete(socketId);
     });
   });
