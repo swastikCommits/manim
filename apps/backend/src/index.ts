@@ -2,14 +2,12 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import http from "http";
-import { WebSocketServer, WebSocket } from "ws";
-import db from "@repo/db/client"
-
-import { setupSocket } from "./ws/SocketHandler";
+import { WebSocketServer } from "ws";
+import { setupSocket } from "./ws/socketHandler";
 
 import { setupBullQueue } from "./queue/producer";
 import { setupWorker } from "./workers/worker";
-import jobRoutes from "./job/jobRoutes";   // routes for enqueueing jobs
+import jobRoutes from "./job/jobRoutes";   
 
 dotenv.config();
 
