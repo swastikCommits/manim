@@ -2,6 +2,7 @@ import express from "express";
 import { videoRenderQueue } from "../queue/producer";
 import { generateId } from "../utils/generateId"
 import db from "@repo/db/client"
+import { JobStatus } from "@prisma/client";
 
 const router = express.Router();
 
@@ -26,15 +27,35 @@ router.post("/", async (req, res) => {
   const trimmedPrompt = prompt.trim();
 
   try {
-    console.log(
-      `[${new Date().toISOString()}] Enqueuing job: "${trimmedPrompt.substring(0, 50)}${trimmedPrompt.length > 50 ? "..." : ""}" (Session: ${sessionId})`
-    );
+    // console.log(
+    //   `[${new Date().toISOString()}] Enqueuing job: "${trimmedPrompt.substring(0, 50)}${trimmedPrompt.length > 50 ? "..." : ""}" (Session: ${sessionId})`
+    // );
+
+
+
+    let resolvedProjectId = projectId;
+    
+    if (!resolvedProjectId && userId) {
+      const newProject = await db.project.create({
+        data: {
+          title: `Project from ${new Date().toLocaleDateString()}`,
+          description: `Created from prompt: "${trimmedPrompt.substring(0, 50)}${trimmedPrompt.length > 50 ? '...' : ''}"`,
+          ownerId: userId
+        }
+      });
+      resolvedProjectId = newProject.id;
+    } else if (!resolvedProjectId && !userId) {
+      return res.status(400).json({
+        success: false,
+        error: "Missing both projectId and userId. Cannot create job context.",
+      });
+    }
 
     const dbJob = await db.job.create({
       data: {
         prompt: trimmedPrompt,
         status: JobStatus.QUEUED,
-        projectId: projectId || "default", // You may need to handle this differently
+        projectId: resolvedProjectId,
         userId,
         parentJobId,
       },
@@ -52,6 +73,8 @@ router.post("/", async (req, res) => {
       jobId: dbJob.id,
       queueJobId: job.id,
       sessionId,
+      projectId: resolvedProjectId, 
+      projectCreated: projectId !== resolvedProjectId, 
       message: "Video generation job enqueued",
       timestamp: new Date().toISOString(),
     });
