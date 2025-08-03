@@ -1,6 +1,6 @@
 import { Worker } from "bullmq";
 import { connection } from "../queue/redisClient";
-import { sendJobUpdate } from "../ws/SocketHandler";
+import { sendJobUpdate } from "../ws/socketHandler";
 import prisma from "@repo/db/client";
 import { JobStatus } from "@prisma/client";
 import { generateManimCode } from "../services/llm";
@@ -11,20 +11,17 @@ export function setupWorker() {
     const { prompt, socketId, jobId } = job.data;
     
     try {
-      // Update job status to PROCESSING
       await prisma.job.update({
         where: { id: jobId },
         data: { status: JobStatus.PROCESSING }
       });
       
-      // Notify client that processing has started
       sendJobUpdate(socketId, jobId, JobStatus.PROCESSING);
       
-      // Generate Manim code
       const code = await generateManimCode(prompt);
       
       // Save the script path to the database
-      const sessionId = job.id.toString();
+      const sessionId = jobId; 
       const scriptPath = getScriptPath(sessionId);
       
       await prisma.job.update({
@@ -40,10 +37,8 @@ export function setupWorker() {
         }
       });
       
-      // Render the video
       const videoUrl = await renderVideo(code, sessionId);
       
-      // Update job with video URL and status
       await prisma.job.update({
         where: { id: jobId },
         data: { 
@@ -52,14 +47,12 @@ export function setupWorker() {
         }
       });
       
-      // Notify client that job is complete
       sendJobUpdate(socketId, jobId, JobStatus.COMPLETED, { videoUrl });
       
       return { success: true, videoUrl };
     } catch (error: any) {
       console.error(`Job ${jobId} failed:`, error);
       
-      // Update job with error status
       await prisma.job.update({
         where: { id: jobId },
         data: { 

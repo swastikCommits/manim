@@ -1,8 +1,9 @@
-import { RedisOptions } from "ioredis";
+import IORedis from "ioredis";
 
-export const connection: RedisOptions = {
-  host: process.env.REDIS_HOST || "127.0.0.1",
-  port: parseInt(process.env.REDIS_PORT || "6379"),
-  password: process.env.REDIS_PASSWORD || undefined,
+const redisUrl = process.env.REDIS_URL || "redis://127.0.0.1:6379";
 
-};
+
+export const connection = new IORedis(redisUrl, {
+  maxRetriesPerRequest: null,
+  enableReadyCheck: false,
+});

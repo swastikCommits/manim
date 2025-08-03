@@ -4,5 +4,5 @@ import { connection } from "./redisClient";
 export const videoRenderQueue = new Queue("video-render", { connection });
 
 export function setupBullQueue() {
-  console.log("BullMQ Producer ready.");
+  console.log("BullMQ Producer ready");
 }
