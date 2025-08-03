@@ -2,7 +2,6 @@ import { WebSocketServer, WebSocket } from "ws";
 import { generateId } from "../utils/generateId";
 import { JobStatus } from "@prisma/client"
 
-// Store connected clients with their IDs
 const clients = new Map<string, WebSocket>();
 
 type WebSocketMessage = {
@@ -15,7 +14,6 @@ type JobUpdateMessage = {
   data: {
     jobId: string;
     status: JobStatus;
-    progress?: number;
     videoUrl?: string;
     error?: string;
   };
@@ -102,18 +100,3 @@ export function sendJobUpdate(socketId: string, jobId: string, status: JobStatus
   });
 }
 
-/**
- * Broadcast a message to all connected clients
- */
-export function broadcastMessage(message: any) {
-  let successCount = 0;
-  
-  clients.forEach((client, id) => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify(message));
-      successCount++;
-    }
-  });
-  
-  return successCount;
-}
