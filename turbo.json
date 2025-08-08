@@ -1,6 +1,6 @@
 {
   "$schema": "https://turborepo.com/schema.json",
-  "globalDependencies": ["**/.env.*local", "$JWT_SECRET"],
+  "globalDependencies": ["**/.env.*local"],
   "ui": "tui",
   "tasks": {
     "build": {
