@@ -49,7 +49,6 @@ For example, in [tailwind.config.ts](packages/tailwind-config/tailwind.config.ts
 If you choose this strategy, you can remove the `tailwindcss` and `autoprefixer` dependencies from the `ui` package.
 
 ### Utilities
-
 This Turborepo has some additional tools already setup for you:
 
 - [Tailwind CSS](https://tailwindcss.com/) for styles
